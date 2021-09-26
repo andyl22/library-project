@@ -1,5 +1,6 @@
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
     <script src="index.js" defer></script>
     <meta charset="UTF-8">
@@ -7,17 +8,42 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Andy's Library</title>
 </head>
+
 <body>
+    <link rel="stylesheet" href="index.css">
+
+    <div id="modal">
+        <div class="modal-content">
+            <div class="modal-content-header">
+                <p class="modal-title">Add a book</p>
+                <p class="close">&#10006;</p>
+            </div>
+            <form class="add-input">
+                <div class="modal-text-input-container">
+                    <input type="text" placeholder="Title" class="modal-text-input" id ="title" required>
+                    <input type="text" placeholder="Author" class="modal-text-input" id ="author" required>
+                    <input type="text" placeholder="Pages" class="modal-text-input" id ="pages" required>
+                    <input type="text" placeholder="Image" class="modal-text-input" id ="image" required>
+                </div>
+                <input type="submit" value="Add to Library" class="add-submit">
+            </form>
+        </div>
+    </div>
+
     <header>
-        <h1>This is Andy's Library Project (TOP)</h1>
+        <h1> Andy's Library</h1>
     </header>
     <main>
-        <div id="book-list">
-
+        <div class="library-management">
+            <button class="buttons" id="add-button">Add Book</button>
+            <button class="buttons" id="remove-button">Remove Book</button>
+        </div>
+        <div class="book-list" id="book-list">
         </div>
     </main>
     <footer>
-
+        <a href="https://github.com/andyl22">GitHub</a>
     </footer>
 </body>
+
 </html>
