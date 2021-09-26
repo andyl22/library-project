@@ -1,49 +1,69 @@
 let libraryOfBooks = [];
-let index = 0;
+let id = 0;
 
 function addToLibrary(bookObj) {
   libraryOfBooks.push(bookObj);
 }
 
-function book(title, author, pages, img) {
+function book(title, author, pages, img, id) {
   this.title = title;
-  this.author = author
+  this.author = author;
   this.pages = pages;
   this.img = img;
+  this.id = id;
+  this.displayed = false;
 
   this.createBookElementOnPage = function () {
-    let bookElement = document.createElement("div");
-    bookElement.classList.add("book");
-    setCover(bookElement);
-    setMetaData(bookElement);
-    let bookList = document.getElementById("book-list");
-    bookList.appendChild(bookElement);
+    if(this.displayed==true) {return};
+    let bookElement = createContainer(id);
+    setupCover(bookElement);
+    let bookInfoContainer = createInfoContainer(bookElement);
+    setupMetaData(bookInfoContainer);
+    createDeleteButton(bookInfoContainer);
+    addToLibrary(bookElement);
+    bookElement.getElementsByClassName("delete-book-button")[0].addEventListener("pointerdown", removeBookElementOnPage);
   }
 
-  function setCover(bookElement) {
+  function createContainer() {
+    let bookElement = document.createElement("div");
+    bookElement.setAttribute("data-id-number", id);
+    bookElement.classList.add("book");
+    return bookElement;
+  }
+
+  function createInfoContainer(bookElement) {
+    let bookInfoContainer = document.createElement("div");
+    bookInfoContainer.classList.add("book-info-container");
+    bookElement.appendChild(bookInfoContainer);
+    return bookInfoContainer;
+  }
+
+  function setupCover(bookElement) {
     let bookCover = document.createElement("img");
     bookCover.setAttribute("src", img);
     bookElement.appendChild(bookCover);
   }
 
-  function setMetaData(bookElement) {
+  function setupMetaData(bookInfoContainer) {
     let metaData = document.createElement("p");
     metaData.innerHTML = `${title}<br/> ${author}<br/> Pages: ${pages}`;
-    bookElement.appendChild(metaData);
+    metaData.classList.add("meta-data")
+    bookInfoContainer.appendChild(metaData);
   }
+
+  function addToLibrary(bookElement) {
+    let bookList = document.getElementById("book-list");
+    bookList.appendChild(bookElement);
+  }
+
+  function createDeleteButton(bookElement) {
+    let deleteButton = document.createElement("p");
+    deleteButton.classList.add("delete-book-button");
+    deleteButton.textContent = "✖";
+    bookElement.appendChild(deleteButton);
+  }
+
 }
-
-let book1 = new book("Lord of the Rings", "J.R. Tolkien", "1000", "https://images-na.ssl-images-amazon.com/images/I/51EstVXM1UL._SX331_BO1,204,203,200_.jpg");
-book1.createBookElementOnPage();
-let book2 = new book("Lord of the Rings", "J.R. Tolkien", "1000", "https://images-na.ssl-images-amazon.com/images/I/51EstVXM1UL._SX331_BO1,204,203,200_.jpg");
-book1.createBookElementOnPage();
-let book3 = new book("Lord of the Rings", "J.R. Tolkien", "1000", "https://images-na.ssl-images-amazon.com/images/I/51EstVXM1UL._SX331_BO1,204,203,200_.jpg");
-book1.createBookElementOnPage();
-
-
-let modal = document.getElementById("modal");
-let addButton = document.getElementById("add-button");
-addButton.addEventListener("pointerdown", showModal);
 
 function showModal() {
   modal.style.setProperty("display", "flex");
@@ -68,8 +88,27 @@ function submitAdd(e) {
   let author = document.getElementById("author").value;
   let pages = document.getElementById("pages").value;
   let image = document.getElementById("image").value;
-  index++;
-  let newBook = new book(title, author, pages, image);
+  let newBook = new book(title, author, pages, image, id);
+  id++;
   libraryOfBooks.push(newBook);
-  libraryOfBooks[0].createBookElementOnPage();
 }
+
+function displayBooks() {
+  libraryOfBooks.forEach(book => {
+    book.createBookElementOnPage();
+    book.displayed = true;
+  });
+}
+
+function removeBookElementOnPage(e) {
+  let idNumber = e.path[2].getAttribute("data-id-number");
+  let arrayIndex = libraryOfBooks.findIndex(obj=> {return obj["id"]==idNumber});
+  libraryOfBooks.splice(arrayIndex,1);
+  e.path[2].remove();
+}
+
+let modal = document.getElementById("modal");
+let addButton = document.getElementById("add-button");
+addButton.addEventListener("pointerdown", showModal);
+let displayButton = document.getElementById("display-button");
+displayButton.addEventListener("pointerdown", displayBooks);
