@@ -3,6 +3,7 @@ let id = 0;
 
 function addToLibrary(bookObj) {
   libraryOfBooks.push(bookObj);
+  id++;
 }
 
 function book(title, author, pages, img, id) {
@@ -108,8 +109,7 @@ function submitAdd(e) {
   let pages = document.getElementById("pages").value;
   let image = document.getElementById("image").value;
   let newBook = new book(title, author, pages, image, id);
-  id++;
-  libraryOfBooks.push(newBook);
+  addToLibrary(newBook);
   displayBooks();
 }
 
@@ -155,3 +155,12 @@ function removeBookElementOnPage(e) {
 let modal = document.getElementById("modal");
 let addButton = document.getElementById("add-button");
 addButton.addEventListener("pointerdown", showModal);
+
+let newBook1 = new book("The 13½ Lives of Captain Bluebear", "Walter Moers", "457", "https://images.gr-assets.com/books/1366154303l/291872.jpg", 0);
+let newBook2 = new book("The Language of Thorns: Midnight Tales and Dangerous Magic", "Leigh Bardugo", "457", "https://th.bing.com/th/id/OIP.99L1OLhqzRYl8jULh9U4TQHaLB?pid=ImgDet&rs=1", 1);
+let newBook3 = new book("Stoner", "John Edward Williams", "278", "https://s-usih.org/wp-content/uploads/2015/11/Stoner-John-Williams.jpg", 2);
+addToLibrary(newBook1);
+addToLibrary(newBook2);
+addToLibrary(newBook3);
+displayBooks();
+console.log(id);

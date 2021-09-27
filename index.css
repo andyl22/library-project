@@ -61,16 +61,19 @@ h1 {
 }
 
 .book {
+    border: 1px solid;
+    border-radius: 5px;
     display: flex;
     width: 250px;
     flex: 0;
     flex-direction: column;
     align-items: center;
-    background: url(resources/paper.jpg);
+    background:rgb(231, 231, 221);
 }
 
 img {
     width: 250px;
+    height:320px;
 }
 
 .book-info-container {
@@ -84,7 +87,7 @@ img {
     word-wrap: break-word;
     width: 100%;
     padding: 5%;
-    text-align: center;
+    text-align: left;
 }
 
 .delete-book-button {
@@ -120,10 +123,12 @@ img {
 
 input[type=checkbox] {
     margin-top: 1px;
+    width: 15px;
+    height: 15px;
 }
 
 .read {
-    background: radial-gradient(circle, rgba(207,255,174,1) 16%, rgba(115,247,94,1) 82%);
+    background: radial-gradient(circle, rgb(212, 218, 129) 16%, rgb(139, 255, 177) 82%);
     border-radius: 5px;
 }
 
