@@ -12,6 +12,7 @@ function book(title, author, pages, img, id) {
   this.img = img;
   this.id = id;
   this.displayed = false;
+  this.read = false;
 
   this.createBookElementOnPage = function () {
     if(this.displayed==true) {return};
@@ -20,6 +21,7 @@ function book(title, author, pages, img, id) {
     let bookInfoContainer = createInfoContainer(bookElement);
     setupMetaData(bookInfoContainer);
     createDeleteButton(bookInfoContainer);
+    createReadCheck(bookElement);
     addToLibrary(bookElement);
     bookElement.getElementsByClassName("delete-book-button")[0].addEventListener("pointerdown", removeBookElementOnPage);
   }
@@ -46,7 +48,7 @@ function book(title, author, pages, img, id) {
 
   function setupMetaData(bookInfoContainer) {
     let metaData = document.createElement("p");
-    metaData.innerHTML = `${title}<br/> ${author}<br/> Pages: ${pages}`;
+    metaData.innerHTML = `Title: ${title}<br/>Author: ${author}<br/>Pages: ${pages}`;
     metaData.classList.add("meta-data")
     bookInfoContainer.appendChild(metaData);
   }
@@ -56,14 +58,31 @@ function book(title, author, pages, img, id) {
     bookList.appendChild(bookElement);
   }
 
-  function createDeleteButton(bookElement) {
+  function createDeleteButton(bookInfoContainer) {
     let deleteButton = document.createElement("p");
     deleteButton.classList.add("delete-book-button");
-    deleteButton.textContent = "✖";
-    bookElement.appendChild(deleteButton);
+    deleteButton.textContent = "Remove";
+    bookInfoContainer.appendChild(deleteButton);
   }
 
+  function createReadCheck(bookElement) {
+    let checkboxContainer = document.createElement("div");
+    checkboxContainer.classList.add("checkbox-container")
+    let readCheckbox = document.createElement("input");
+    let labelForCheckbox = document.createElement("label");
+    let labelID = id;
+    readCheckbox.setAttribute("type", "checkbox");
+    readCheckbox.setAttribute("id", labelID);
+    labelForCheckbox.setAttribute("for", labelID);
+    labelForCheckbox.textContent = "Read?";
+    checkboxContainer.appendChild(labelForCheckbox);
+    checkboxContainer.appendChild(readCheckbox);
+    bookElement.append(checkboxContainer);
+    readCheckbox.addEventListener("change", toggleReadStatus);
+  }
 }
+
+
 
 function showModal() {
   modal.style.setProperty("display", "flex");
@@ -91,6 +110,7 @@ function submitAdd(e) {
   let newBook = new book(title, author, pages, image, id);
   id++;
   libraryOfBooks.push(newBook);
+  displayBooks();
 }
 
 function displayBooks() {
@@ -98,6 +118,31 @@ function displayBooks() {
     book.createBookElementOnPage();
     book.displayed = true;
   });
+}
+
+function toggleReadStatus(e) {
+  let bookContainer = e.path[2];
+  let idNumber = bookContainer.getAttribute("data-id-number");
+  let selectedBook = libraryOfBooks.find((obj=> {return obj["id"]==idNumber}));
+  selectedBook.read = !selectedBook.read;
+  (selectedBook.read) ? bookContainer.classList.add("read") : bookContainer.classList.remove("read");
+  toggleRemoveButton(e);
+}
+
+function toggleRemoveButton(e) {
+  if (e.srcElement.checked == true) {
+    let removeButton = e.path[2].querySelector(".book-info-container .delete-book-button");
+    removeButton.textContent = "Finished";
+    removeButton.removeEventListener("pointerdown", removeBookElementOnPage);
+    removeButton.classList.remove("delete-book-button");
+    removeButton.classList.add("complete");
+  } else {
+    let removeButton = e.path[2].querySelector(".book-info-container .complete");
+    removeButton.textContent = "Remove";
+    removeButton.addEventListener("pointerdown", removeBookElementOnPage);
+    removeButton.classList.remove("complete");
+    removeButton.classList.add("delete-book-button");
+  }
 }
 
 function removeBookElementOnPage(e) {
@@ -110,5 +155,3 @@ function removeBookElementOnPage(e) {
 let modal = document.getElementById("modal");
 let addButton = document.getElementById("add-button");
 addButton.addEventListener("pointerdown", showModal);
-let displayButton = document.getElementById("display-button");
-displayButton.addEventListener("pointerdown", displayBooks);
